@@ -10,8 +10,8 @@ serve(async (req) => {
 
   try {
     const { imageUrls, occasion, season, context } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const AI_GATEWAY_KEY = Deno.env.get("AI_GATEWAY_KEY");
+    if (!AI_GATEWAY_KEY) throw new Error("AI_GATEWAY_KEY is not configured");
 
     if (!imageUrls || imageUrls.length === 0) {
       return new Response(JSON.stringify({ error: "No images provided" }), {
@@ -68,9 +68,9 @@ serve(async (req) => {
       },
     };
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.stylesense.ai/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${AI_GATEWAY_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [

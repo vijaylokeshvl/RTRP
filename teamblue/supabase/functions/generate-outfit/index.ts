@@ -59,7 +59,7 @@ async function handleProductSearch(query: string, limit: number): Promise<Respon
 // ───────── Background job processor ─────────
 async function processOutfitJob(jobId: string, supabaseAdmin: any, body: any) {
   const { occasion, season, palette, vibe, gender, analysisContext, specifications, userId } = body;
-  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  const AI_GATEWAY_KEY = Deno.env.get("AI_GATEWAY_KEY");
 
   try {
     await supabaseAdmin.from("generation_jobs").update({ status: "processing" }).eq("id", jobId);
@@ -81,9 +81,9 @@ Provide:
 
 Use markdown. Be specific with colors, materials. Tailor to ${genderLabel} fashion.`;
 
-    const textResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const textResp = await fetch("https://api.stylesense.ai/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${AI_GATEWAY_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
@@ -104,9 +104,9 @@ Use markdown. Be specific with colors, materials. Tailor to ${genderLabel} fashi
     let imageUrl: string | undefined;
     try {
       const imagePrompt = `Editorial fashion flat-lay mood board for a ${vibe || "stylish"} ${genderLabel} ${occasion} outfit, ${season}. ${palette ? `Palette: ${palette}.` : ""} ${specifications ? `Must include: ${specifications}.` : ""} Cream background, elegant arrangement, ultra high-res.`;
-      const imgResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const imgResp = await fetch("https://api.stylesense.ai/v1/chat/completions", {
         method: "POST",
-        headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${AI_GATEWAY_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "google/gemini-2.5-flash-image",
           messages: [{ role: "user", content: imagePrompt }],
